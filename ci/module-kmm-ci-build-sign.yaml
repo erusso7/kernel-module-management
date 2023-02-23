@@ -20,6 +20,9 @@ spec:
               - name: build-secret
             dockerfileConfigMap:
               name: kmm-kmod-dockerfile
+            # Optional. If the selector is missing, it will use the top level spec.selector value.
+            selector:
+              kubernetes.io/hostname: minikube
             # Optional. If kanikoParams.tag is empty, the default value will be: 'latest'
             kanikoParams:
               tag: "debug"

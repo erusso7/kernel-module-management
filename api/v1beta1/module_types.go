@@ -65,6 +65,10 @@ type Build struct {
 	// +optional
 	// KanikoParams is used to customize the building process of the image.
 	KanikoParams *KanikoParams `json:"kanikoParams,omitempty"`
+
+	// +optional
+	// Selector describes on which nodes the Job should be created.
+	Selector map[string]string `json:"selector,omitempty"`
 }
 
 type Sign struct {

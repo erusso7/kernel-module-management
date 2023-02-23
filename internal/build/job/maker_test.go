@@ -75,6 +75,7 @@ var _ = Describe("MakeJobTemplate", func() {
 
 		ctx := context.Background()
 		nodeSelector := map[string]string{"arch": "x64"}
+		nodeSelectorForJob := map[string]string{"arch": "arm"}
 
 		mld := api.ModuleLoaderData{
 			Owner:     &mod,
@@ -83,6 +84,7 @@ var _ = Describe("MakeJobTemplate", func() {
 			Build: &kmmv1beta1.Build{
 				BuildArgs:           buildArgs,
 				DockerfileConfigMap: &dockerfileConfigMap,
+				Selector:            nodeSelectorForJob,
 			},
 			ContainerImage: image,
 			RegistryTLS:    &kmmv1beta1.TLSOptions{},
@@ -136,7 +138,7 @@ var _ = Describe("MakeJobTemplate", func() {
 								},
 							},
 						},
-						NodeSelector:  nodeSelector,
+						NodeSelector:  nodeSelectorForJob,
 						RestartPolicy: v1.RestartPolicyNever,
 						Volumes: []v1.Volume{
 							{

@@ -129,6 +129,11 @@ func (m *maker) specTemplate(
 		kanikoImage += ":" + buildConfig.KanikoParams.Tag
 	}
 
+	nodeSelector := mld.Selector
+	if buildConfig.Selector != nil {
+		nodeSelector = buildConfig.Selector
+	}
+
 	return v1.PodTemplateSpec{
 		Spec: v1.PodSpec{
 			Containers: []v1.Container{
@@ -139,7 +144,7 @@ func (m *maker) specTemplate(
 					VolumeMounts: volumeMounts(mld.ImageRepoSecret, buildConfig),
 				},
 			},
-			NodeSelector:  mld.Selector,
+			NodeSelector:  nodeSelector,
 			RestartPolicy: v1.RestartPolicyNever,
 			Volumes:       volumes(mld.ImageRepoSecret, buildConfig),
 		},
