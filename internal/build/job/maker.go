@@ -133,7 +133,7 @@ func (m *maker) specTemplate(
 		Spec: v1.PodSpec{
 			Containers: []v1.Container{
 				{
-					Args:         m.containerArgs(buildConfig, mld.KernelVersion, containerImage, registryTLS, pushImage),
+					Args:         m.containerArgs(buildConfig, mld, containerImage, registryTLS, pushImage),
 					Name:         "kaniko",
 					Image:        kanikoImage,
 					VolumeMounts: volumeMounts(mld.ImageRepoSecret, buildConfig),
@@ -148,7 +148,7 @@ func (m *maker) specTemplate(
 
 func (m *maker) containerArgs(
 	buildConfig *kmmv1beta1.Build,
-	targetKernel string,
+	mld *api.ModuleLoaderData,
 	containerImage string,
 	registryTLS *kmmv1beta1.TLSOptions,
 	pushImage bool) []string {
@@ -160,9 +160,14 @@ func (m *maker) containerArgs(
 		args = append(args, "--no-push")
 	}
 
+	overrides := []kmmv1beta1.BuildArg{
+		{Name: "KERNEL_VERSION", Value: mld.KernelVersion},
+		{Name: "MOD_NAME", Value: mld.Name},
+		{Name: "MOD_NAMESPACE", Value: mld.Namespace},
+	}
 	buildArgs := m.helper.ApplyBuildArgOverrides(
 		buildConfig.BuildArgs,
-		kmmv1beta1.BuildArg{Name: "KERNEL_VERSION", Value: targetKernel},
+		overrides...,
 	)
 
 	for _, ba := range buildArgs {
